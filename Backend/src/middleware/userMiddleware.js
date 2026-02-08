@@ -1,29 +1,34 @@
-const jwt = require("jsonwebtoken")
-const User = require("../models/users")
-const redisClient = require("../config/redis")
+const jwt = require("jsonwebtoken");
+const User = require("../models/users");
+const redisClient = require("../config/redis");
 
+const userMiddleware = async (req, res, next) => {
+  try {
+    const { token } = req.cookies;
 
-const userMidd = async (req, res, next) => {
-    try {
-        const { token } = req.cookies;
-        if (!token) throw new Error("token is missing");
-
-        const payload = jwt.verify(token, process.env.JWT_KEY);
-        const { _id } = payload;
-        if (!_id) throw new Error("Invalid payload ID");
-
-        const result = await User.findById(_id);
-        if (!result) throw new Error("User not found");
-
-        // redis check for blocked token
-        const IsBlocked = await redisClient.exists(`token:${token}`);
-        if (IsBlocked) throw new Error("Invalid Token")
-
-        req.result = result;
-        next();
-
-    } catch (err) {
-
+    if (!token) {
+      return res.status(401).json({ message: "Token missing" });
     }
-}
-module.exports = userMidd;
+
+    const payload = jwt.verify(token, process.env.JWT_KEY);
+    const user = await User.findById(payload._id);
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    const isBlocked = await redisClient.exists(`token:${token}`);
+    if (isBlocked) {
+      return res.status(401).json({ message: "Token blocked" });
+    }
+
+    req.result = user;
+    return next();
+
+  } catch (err) {
+    console.error("❌ userMiddleware error:", err.message);
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+};
+
+module.exports = userMiddleware;

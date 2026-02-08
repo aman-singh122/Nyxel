@@ -19,9 +19,6 @@ import {
 import Animate from "../../animate";
 import AppLayout from "../../Components/AppLayout";
 
-// Initialize Socket.IO client
-const socket = io("http://localhost:5000");
-
 // Component: Message Component
 const MessageComponent = ({ message, onReact, onReply, onPin, onDelete, isCurrentUser }) => {
   const [showActions, setShowActions] = useState(false);
@@ -409,6 +406,7 @@ function Chat() {
   
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const socketRef = useRef(null);
 
   const {
     register,
@@ -430,26 +428,53 @@ function Chat() {
     { id: 8, name: "Maya Rodriguez", avatar: "👩‍🔧", status: "online", role: "QA Engineer", skills: ["Testing", "Automation", "Security"] },
   ];
 
-  // Enhanced useEffect for socket connections
+  // ✅ STEP 3 – Socket initialization useEffect
+useEffect(() => {
+  console.log("🟡 Initializing socket...");
+
+  socketRef.current = io(import.meta.env.VITE_BACKEND_URL, {
+    withCredentials: true,
+    transports: ["polling", "websocket"],
+  });
+
+  socketRef.current.on("connect", () => {
+    console.log("🟢 Socket connected:", socketRef.current.id);
+    setLoading(false);
+
+    // ✅ JOIN ROOM YAHIN
+    socketRef.current.emit("joinRoom", {
+      room: activeRoom,
+      username: "You",
+      userId: generateUserId(),
+      status: userStatus
+    });
+  });
+
+  socketRef.current.on("disconnect", () => {
+    console.log("🔴 Socket disconnected");
+  });
+
+  return () => {
+    socketRef.current?.disconnect();
+  };
+}, []);
+
+
+  // ✅ Enhanced useEffect for socket event listeners
   useEffect(() => {
+    if (!socketRef.current) return;
+    
+    const socket = socketRef.current;
+
     // Simulate initial load with more features
     const timer = setTimeout(() => {
-      setLoading(false);
       loadEnhancedChatHistory();
-      joinRoom(activeRoom);
+      // joinRoom(activeRoom);
       loadPinnedMessages();
     }, 1500);
 
     // Enhanced Socket event listeners
-    socket.on("connect", () => {
-      console.log("Connected to chat server with ID:", socket.id);
-      socket.emit("joinRoom", { 
-        room: activeRoom, 
-        username: "You",
-        userId: generateUserId(),
-        status: userStatus
-      });
-    });
+  
 
     socket.on("userJoined", (data) => {
       console.log(`${data.username} joined with role: ${data.role}`);
@@ -609,7 +634,7 @@ function Chat() {
   };
 
   const joinRoom = (roomId) => {
-    socket.emit("joinRoom", { 
+    socketRef.current?.emit("joinRoom", { 
       room: roomId, 
       username: "You",
       userId: generateUserId(),
@@ -686,7 +711,7 @@ function Chat() {
     setMessages(prev => [...prev, userMsg]);
     
     // Emit message through socket
-    socket.emit("sendMessage", {
+    socketRef.current?.emit("sendMessage", {
       room: activeRoom,
       message: data.message,
       username: "You",
@@ -695,11 +720,11 @@ function Chat() {
     });
 
     reset();
-    socket.emit("typing", { room: activeRoom, username: "You" });
+    socketRef.current?.emit("typing", { room: activeRoom, username: "You" });
   };
 
   const handleTyping = () => {
-    socket.emit("typing", { room: activeRoom, username: "You" });
+    socketRef.current?.emit("typing", { room: activeRoom, username: "You" });
   };
 
   const updateMessageReaction = (messageId, reaction) => {
@@ -749,7 +774,6 @@ function Chat() {
     addSystemMessage(`Status changed to ${nextStatus}`);
   };
 
-  // Fix missing functions
   const handleFileUpload = () => {
     fileInputRef.current?.click();
   };
@@ -768,7 +792,7 @@ function Chat() {
     };
 
     setMessages(prev => [...prev, emojiMessage]);
-    socket.emit("sendMessage", {
+    socketRef.current?.emit("sendMessage", {
       room: activeRoom,
       message: emoji,
       username: "You",
@@ -1123,7 +1147,7 @@ function Chat() {
                           message={msg}
                           isCurrentUser={msg.username === "You"}
                           onReact={(messageId, reaction) => {
-                            socket.emit("reactToMessage", {
+                            socketRef.current?.emit("reactToMessage", {
                               messageId,
                               reaction,
                               room: activeRoom
@@ -1134,7 +1158,7 @@ function Chat() {
                             document.querySelector('input[name="message"]')?.focus();
                           }}
                           onPin={(message) => {
-                            socket.emit("pinMessage", {
+                            socketRef.current?.emit("pinMessage", {
                               messageId: message.id,
                               room: activeRoom
                             });
@@ -1327,15 +1351,15 @@ function Chat() {
         <div className="fixed bottom-6 left-6 z-50">
           <div className="flex items-center gap-3">
             <div className={`px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm ${
-              socket.connected
+              socketRef.current?.connected
                 ? 'bg-emerald-100/80 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
                 : 'bg-red-100/80 text-red-800 dark:bg-red-900/30 dark:text-red-400'
             }`}>
               <div className="flex items-center gap-2">
                 <div className={`w-3 h-3 rounded-full ${
-                  socket.connected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'
+                  socketRef.current?.connected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'
                 }`}></div>
-                <span>{socket.connected ? 'Connected' : 'Disconnected'}</span>
+                <span>{socketRef.current?.connected ? 'Connected' : 'Disconnected'}</span>
               </div>
             </div>
             

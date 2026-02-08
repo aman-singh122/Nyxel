@@ -43,6 +43,9 @@ authRouter.delete('/admin/users/:id', adminMiddleware, async (req, res) => {
   }
 });
 
+
+
+
 // Keep the check endpoint but simplify it:
 authRouter.get("/check", userMiddleware, (req, res) => {
   try {

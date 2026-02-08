@@ -103,49 +103,45 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    console.log("🔥 LOGIN API HIT");
-    console.log("📦 BODY:", req.body);
-
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email or password missing" });
+    const people = await User.findOne({ emailId: email });
+    if (!people) {
+      return res.status(401).json({ message: "Invalid Credentials" });
     }
 
-    const user = await User.findOne({ emailId: email });
-    console.log("👤 USER FOUND:", user);
-
-    if (!user) {
-      return res.status(401).json({ message: "User not found" });
+    const isAllowed = await bcrypt.compare(password, people.password);
+    if (!isAllowed) {
+      return res.status(401).json({ message: "Invalid Credentials" });
     }
 
-    const match = await bcrypt.compare(password, user.password);
-    console.log("🔑 PASSWORD MATCH:", match);
+    const token = jwt.sign(
+      { _id: people._id, role: people.role },
+      process.env.JWT_KEY,
+      { expiresIn: "1d" }
+    );
 
-    if (!match) {
-      return res.status(401).json({ message: "Wrong password" });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "LOGIN SUCCESS",
-      user: {
-        _id: user._id,
-        emailId: user.emailId,
-        firstName: user.firstName,
-      },
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,      // localhost
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
     });
+
+    res.status(200).json({
+      user: {
+        _id: people._id,
+        firstName: people.firstName,
+        emailId: people.emailId,
+        role: people.role,
+      },
+      message: "User Login Successfully",
+    });
+
   } catch (err) {
-    console.error("❌ LOGIN ERROR:", err);
-    return res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Login failed" });
   }
 };
-
-module.exports = { login };
-
-
-
-
 
 
 const getProfile = async (req, res) => {
@@ -270,7 +266,7 @@ const forgotPassword = async (req, res) => {
     user.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    const resetURL = `${process.env.FRONTEND_URL || 'http://localhost:5174'}/reset-password/${resetToken}`;
+    const resetURL = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",

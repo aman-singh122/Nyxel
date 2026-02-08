@@ -40,16 +40,16 @@ import ChatRoomAdmin from "./pages/NavLinks/ChatRoomAdmin";
 function App() {
   const dispatch = useDispatch();
 
-const { isAuthenticated, checkingAuth, user } = useSelector(
-  (state) => state.auth
-);
+  const { isAuthenticated, loading, user } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
 
 
-  if (checkingAuth) {
+  if (loading) {
     return (
 
       <div className="relative min-h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
