@@ -1,0 +1,261 @@
+import { useEffect } from "react";
+import { Routes, Route, Navigate ,Link} from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import "./App.css";
+
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import { checkAuth } from "./features/authSlice";
+import ProblemsPage from "./pages/NavLinks/Problem";
+import Dashboard from "./Components/DashBoard/DashBoard";
+import ContestsPage from "./pages/NavLinks/Contests";
+import Admin from "./pages/Admin";
+import CreateProblem from "./Components/Admin/CreateProblem";
+import UpdateProblem from "./Components/Admin/UpdateProblem";
+import ChatAi from "./pages/NavLinks/ChatAi";
+import Ask from "./pages/NavLinks/Ask";
+import ProblemPage from "./Components/ProblemIdPage/ProblemPage";
+import AdminDelete from "./Components/Admin/AdminDelete";
+import AdminVideo from "./Components/Admin/AdminVideo";
+import AdminUpload from "./Components/Admin/AdminUpload";
+import AdminUpdate from "./Components/Admin/AdminUpdate";
+import Tutorials from "./pages/NavLinks/Tutorials";
+// // 🔥 DISCUSS IMPORTS
+import DiscussList from "./pages/DiscussionList";
+import DiscussDetails from "./pages/DiscussionPage";
+import DiscussCreate from "./pages/DiscussionCreate";
+import ContestManager from "./Components/Admin/AdminContest";
+import Animate from "./animate";
+import AppLayout from "./Components/AppLayout";
+import { MessagesSquare } from 'lucide-react';
+import AdminAllUsers from "./Components/Admin/AdminAllUsers";
+import ChatRoom from "./pages/NavLinks/ChatRoom"
+import {  Shield } from "lucide-react";
+import ChatRoomAdmin from "./pages/NavLinks/ChatRoomAdmin";
+
+
+function App() {
+  const dispatch = useDispatch();
+
+const { isAuthenticated, checkingAuth, user } = useSelector(
+  (state) => state.auth
+);
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
+
+  if (checkingAuth) {
+    return (
+
+      <div className="relative min-h-screen overflow-hidden bg-white text-black dark:bg-black dark:text-white">
+        {/* 🌌 Animated Background (dark only) */}
+        <div className="hidden dark:block">
+          <Animate />
+        </div>
+
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              {/* Light mode: emerald-900, Dark mode: emerald-400/30 */}
+              <div className="w-20 h-20 border-4 border-emerald-900/30 rounded-full dark:border-emerald-400/30"></div>
+
+              {/* Light mode: emerald-900, Dark mode: emerald-400 */}
+              <div className="absolute inset-0 w-20 h-20 border-4 border-emerald-900 border-t-transparent rounded-full animate-spin dark:border-emerald-400 dark:border-t-transparent"></div>
+
+              {/* Light mode: emerald-900, Dark mode: emerald-400 */}
+              <MessagesSquare className="absolute inset-0 m-auto w-8 h-8 text-emerald-900 dark:text-emerald-400" />
+            </div>
+
+            {/* Light mode: emerald-900, Dark mode: emerald-400 */}
+            <p className="mt-6 text-lg font-medium text-emerald-900 dark:text-emerald-400">
+              Loading ...
+            </p>
+
+            {/* Light mode: black with opacity, Dark mode: white with opacity */}
+            <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+              Preparing the best experience for you.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    );
+  }
+
+  return (
+    <Routes>
+      {/* HOME */}
+      <Route
+        path="/"
+        element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
+      />
+
+      {/* AUTH */}
+      <Route
+        path="/login"
+        element={isAuthenticated ? <Navigate to="/" /> : <Login />}
+      />
+      <Route
+        path="/signup"
+        element={isAuthenticated ? <Navigate to="/" /> : <Signup />}
+      />
+
+      {/* ADMIN */}
+      <Route
+        path="/admin"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <Admin />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/create"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <CreateProblem />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/update"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminUpdate />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/update/:id"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <UpdateProblem />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/delete"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminDelete />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/video"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminVideo />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+      <Route
+        path="/admin/contest"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <ContestManager />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+
+      <Route
+        path="/admin/upload/:problemId"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminUpload />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+      <Route
+        path="/admin/users"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <AdminAllUsers />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+      {/* <Route
+        path="/connect"
+        element={
+          isAuthenticated && user?.role === "admin" ? (
+            <ChatRoom />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      /> */}
+
+      <Route
+  path="/connect"
+  element={
+    isAuthenticated ? (
+      user?.role === "admin" ? (
+        <ChatRoom />
+      ) : (
+       <ChatRoomAdmin/>
+      )
+    ) : (
+      <Navigate to="/" />
+    )
+  }
+/>
+
+      {/* DISCUSS (BLOGS) */}
+      <Route path="/discuss" element={<DiscussList />} />
+      <Route path="/discuss/:id" element={<DiscussDetails />} />
+      <Route
+        path="/admin/discuss/create"
+        element={
+          // isAuthenticated && user?.role === "admin" ? (
+          //   <DiscussCreate />
+          // ) : (
+          //   <Navigate to="/" />
+          // )
+          <DiscussCreate />
+        }
+      />
+
+      {/* OTHER ROUTES */}
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/problems" element={<ProblemsPage />} />
+      <Route path="/contests" element={<ContestsPage />} />
+      <Route path="/tutorials" element={<Tutorials />} />
+      <Route path="/chat" element={<ChatAi />} />
+      <Route path="/ask" element={<Ask />} />
+      <Route path="/problem/:problemId" element={<ProblemPage />} />
+
+    </Routes>
+  );
+}
+
+export default App;
