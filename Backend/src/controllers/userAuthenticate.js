@@ -121,10 +121,13 @@ const login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
+    // 🔥 Important Part
+    const isProd = process.env.NODE_ENV === "production";
+
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,      // localhost
-      sameSite: "lax",
+      secure: isProd,                     // true in production (HTTPS)
+      sameSite: isProd ? "None" : "Lax",  // None for cross-site, Lax for local
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -142,6 +145,7 @@ const login = async (req, res) => {
     res.status(500).json({ message: "Login failed" });
   }
 };
+
 
 
 const getProfile = async (req, res) => {
