@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { Routes, Route, Navigate ,Link} from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 
+import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -10,7 +11,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import { checkAuth } from "./features/authSlice";
 import ProblemsPage from "./pages/NavLinks/Problem";
-import Dashboard from "./Components/DashBoard/DashBoard";
+import UserDashboard from "./Components/DashBoard/DashBoard";
 import ContestsPage from "./pages/NavLinks/Contests";
 import Admin from "./pages/Admin";
 import CreateProblem from "./Components/Admin/CreateProblem";
@@ -29,11 +30,9 @@ import DiscussDetails from "./pages/DiscussionPage";
 import DiscussCreate from "./pages/DiscussionCreate";
 import ContestManager from "./Components/Admin/AdminContest";
 import Animate from "./animate";
-import AppLayout from "./Components/AppLayout";
 import { MessagesSquare } from 'lucide-react';
 import AdminAllUsers from "./Components/Admin/AdminAllUsers";
 import ChatRoom from "./pages/NavLinks/ChatRoom"
-import {  Shield } from "lucide-react";
 import ChatRoomAdmin from "./pages/NavLinks/ChatRoomAdmin";
 
 
@@ -89,20 +88,17 @@ function App() {
 
   return (
     <Routes>
-      {/* HOME */}
-      <Route
-        path="/"
-        element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
-      />
+      {/* LANDING */}
+      <Route path="/" element={<Landing />} />
 
       {/* AUTH */}
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/" /> : <Login />}
+        element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />}
       />
       <Route
         path="/signup"
-        element={isAuthenticated ? <Navigate to="/" /> : <Signup />}
+        element={isAuthenticated ? <Navigate to="/dashboard" /> : <Signup />}
       />
 
       {/* ADMIN */}
@@ -246,7 +242,14 @@ function App() {
       {/* OTHER ROUTES */}
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route
+        path="/dashboard"
+        element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/profile"
+        element={isAuthenticated ? <UserDashboard /> : <Navigate to="/login" />}
+      />
       <Route path="/problems" element={<ProblemsPage />} />
       <Route path="/contests" element={<ContestsPage />} />
       <Route path="/tutorials" element={<Tutorials />} />

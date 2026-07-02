@@ -1,10 +1,31 @@
 // src/index.js
 const express = require("express");
 const http = require("http");
+const path = require("path");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-require("dotenv").config();
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const requiredEnv = [
+  "DB_CONNECT_STRING",
+  "JWT_KEY",
+  "REDIS_HOST",
+  "REDIS_PORT",
+  "REDIS_PASSWORD",
+];
+
+if (requiredEnv.some((key) => !process.env[key])) {
+  dotenv.config({ path: path.resolve(__dirname, ".env") });
+}
+
+const missingEnv = requiredEnv.filter((key) => !process.env[key]);
+
+if (missingEnv.length > 0) {
+  throw new Error(`Missing required environment variables: ${missingEnv.join(", ")}`);
+}
 
 // App
 const app = express();
@@ -103,7 +124,7 @@ const initializeConnection = async () => {
   try {
     await Promise.all([
       main(),
-      redisClient.connect(),
+      // redisClient.connect(),
     ]);
 
     console.log("✅ Connected to DB and Redis");

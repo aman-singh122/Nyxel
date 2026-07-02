@@ -17,8 +17,8 @@ const adminMidd = async (req, res, next) => {
         if (!result) throw new Error("User not found");
 
         // redis check for blocked token
-        const IsBlocked = await redisClient.exists(`token:${token}`);
-        if (IsBlocked) throw new Error("Invalid Token")
+        // const IsBlocked = await redisClient.exists(`token:${token}`);
+        // if (IsBlocked) throw new Error("Invalid Token")
 
         req.result = result;
         next();

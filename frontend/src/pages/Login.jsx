@@ -8,6 +8,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { loginUser, clearError } from "../features/authSlice";
 
+const MotionDiv = motion.div;
+const MotionForm = motion.form;
+const MotionButton = motion.button;
+
 /* ---------------- ZOD SCHEMA ---------------- */
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -62,7 +66,7 @@ const Login = () => {
   const role = watch("role");
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/");
+    if (isAuthenticated) navigate("/dashboard");
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
@@ -80,7 +84,7 @@ const Login = () => {
       <div className="absolute -top-40 -left-40 w-[520px] h-[520px] bg-white/5 blur-[160px]" />
       <div className="absolute bottom-0 right-0 w-[520px] h-[520px] bg-white/5 blur-[160px]" />
 
-      <motion.div
+      <MotionDiv
         className="relative z-10 w-full max-w-md"
         variants={container}
         initial="hidden"
@@ -90,18 +94,18 @@ const Login = () => {
         <div className="bg-[#0b0b0b]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8 text-white">
 
           {/* HEADER */}
-          <motion.div variants={item} className="mb-8 text-center">
+          <MotionDiv variants={item} className="mb-8 text-center">
             <h1 className="text-3xl font-bold mb-2">
               Sign in to Nyxel
             </h1>
             <p className="text-white/60 text-sm">
               Access your account and continue solving problems.
             </p>
-          </motion.div>
+          </MotionDiv>
 
           {/* ERRORS */}
           {(errors.email || errors.password || error) && (
-            <motion.div
+            <MotionDiv
               variants={errorAnim}
               initial="hidden"
               animate="visible"
@@ -122,16 +126,16 @@ const Login = () => {
                   <AlertCircle size={14} /> {error}
                 </div>
               )}
-            </motion.div>
+            </MotionDiv>
           )}
 
           {/* FORM */}
-          <motion.form
+          <MotionForm
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-5"
           >
             {/* EMAIL */}
-            <motion.div variants={item}>
+            <MotionDiv variants={item}>
               <label className="text-xs uppercase tracking-wide text-white/50">
                 Email
               </label>
@@ -141,10 +145,10 @@ const Login = () => {
                 {...register("email")}
                 className="w-full mt-1 px-4 py-3 rounded-lg bg-[#121212] border border-white/10 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition"
               />
-            </motion.div>
+            </MotionDiv>
 
             {/* ROLE */}
-            <motion.div variants={item}>
+            <MotionDiv variants={item}>
               <label className="text-xs uppercase tracking-wide text-white/50 mb-2 block">
                 Login as
               </label>
@@ -166,10 +170,10 @@ const Login = () => {
                   </button>
                 ))}
               </div>
-            </motion.div>
+            </MotionDiv>
 
             {/* PASSWORD */}
-            <motion.div variants={item}>
+            <MotionDiv variants={item}>
               <label className="text-xs uppercase tracking-wide text-white/50">
                 Password
               </label>
@@ -188,21 +192,21 @@ const Login = () => {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-            </motion.div>
+            </MotionDiv>
 
             {/* SUBMIT */}
-            <motion.button
+            <MotionButton
               variants={item}
               type="submit"
               disabled={loading}
               className="cursor-pointer w-full py-3 rounded-xl bg-white text-black font-semibold hover:bg-white/90 transition flex justify-center items-center gap-2"
             >
               {loading ? "Signing in..." : "Sign in"}
-            </motion.button>
-          </motion.form>
+            </MotionButton>
+          </MotionForm>
 
           {/* FOOTER LINKS */}
-          <motion.div
+          <MotionDiv
             variants={item}
             className="mt-6 flex flex-col gap-3 text-sm text-white/60"
           >
@@ -219,9 +223,9 @@ const Login = () => {
                 Create an account
               </NavLink>
             </p>
-          </motion.div>
+          </MotionDiv>
         </div>
-      </motion.div>
+      </MotionDiv>
     </div>
   );
 };

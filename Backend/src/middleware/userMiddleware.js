@@ -17,10 +17,10 @@ const userMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
-    const isBlocked = await redisClient.exists(`token:${token}`);
-    if (isBlocked) {
-      return res.status(401).json({ message: "Token blocked" });
-    }
+    // const isBlocked = await redisClient.exists(`token:${token}`);
+    // if (isBlocked) {
+    //   return res.status(401).json({ message: "Token blocked" });
+    // }
 
     req.result = user;
     return next();
