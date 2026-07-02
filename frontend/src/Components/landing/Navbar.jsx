@@ -31,9 +31,9 @@ function Navbar({ startPath }) {
         <Link
           to="/"
           className="text-lg font-semibold tracking-[0.18em] text-[#F9FAFB] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]"
-          aria-label="Nixel home"
+          aria-label="Nyxel home"
         >
-          NIXEL
+          NYXEL
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">

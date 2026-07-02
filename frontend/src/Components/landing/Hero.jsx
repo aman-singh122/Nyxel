@@ -34,7 +34,7 @@ function Hero({ startPath }) {
           Become Interview Ready.
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-[#9CA3AF]">
-          Nixel brings problems, contests, discussions, progress tracking, and AI guidance into one polished coding environment so you can build consistency and confidence before the interview.
+          Nyxel brings problems, contests, discussions, progress tracking, and AI guidance into one polished coding environment so you can build consistency and confidence before the interview.
         </p>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">

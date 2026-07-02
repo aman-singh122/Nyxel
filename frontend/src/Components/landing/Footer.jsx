@@ -16,7 +16,8 @@ function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1.2fr_2fr]">
           <div>
             <Link to="/" className="text-lg font-semibold tracking-[0.18em] text-[#F9FAFB]">
-              NIXEL
+              
+              
             </Link>
             <p className="mt-4 max-w-sm text-base leading-7 text-[#9CA3AF]">
               A focused coding platform for problem solving, contests, discussions, and interview preparation.
@@ -58,7 +59,7 @@ function Footer() {
         </div>
 
         <div className="mt-10 border-t border-[#1F2937] pt-6 text-sm text-[#9CA3AF]">
-          Copyright 2026 Nixel. All rights reserved.
+          Copyright 2026 Nyxel. All rights reserved.
         </div>
       </div>
     </footer>

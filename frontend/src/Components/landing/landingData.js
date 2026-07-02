@@ -72,7 +72,7 @@ export const testimonials = [
   {
     name: "Rohan Sharma",
     role: "SDE Intern",
-    quote: "Nixel made interview preparation much easier. The problem flow kept me consistent.",
+    quote: "Nyxel made interview preparation much easier. The problem flow kept me consistent.",
   },
   {
     name: "Ananya Gupta",
@@ -88,7 +88,7 @@ export const testimonials = [
 
 export const faqs = [
   {
-    question: "Is Nixel free?",
+    question: "Is Nyxel free?",
     answer: "Yes. You can create an account, solve problems, and use the core preparation tools for free.",
   },
   {
@@ -100,7 +100,7 @@ export const faqs = [
     answer: "Contests are structured around timed problem sets so you can practice speed, accuracy, and decision making.",
   },
   {
-    question: "Does Nixel support multiple languages?",
+    question: "Does Nyxel support multiple languages?",
     answer: "Yes. The platform supports popular interview languages including C++, Python, Java, and JavaScript.",
   },
 ];
